@@ -1,0 +1,24 @@
+﻿<Properties StartupConfiguration="{CF692052-FDCF-63E6-42F9-BED68345FE36}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Standard Assets/ParticleSystems/Scripts/SmokeParticles.cs">
+    <Files>
+      <File FileName="Assets/Source/Airbase.cs" Line="66" Column="46" />
+      <File FileName="Assets/Source/FighterController.cs" Line="39" Column="24" />
+      <File FileName="Assets/Source/BotAttackController.cs" Line="83" Column="12" />
+      <File FileName="Assets/Source/Blaster.cs" Line="22" Column="17" />
+      <File FileName="Assets/Source/SpaceShipMove.cs" Line="1" Column="1" />
+      <File FileName="Assets/Source/Bullet.cs" Line="1" Column="1" />
+      <File FileName="Assets/Source/BotDefendController.cs" Line="34" Column="45" />
+      <File FileName="Assets/Source/Fractal.cs" Line="1" Column="1" />
+      <File FileName="Assets/Standard Assets/ParticleSystems/Scripts/Explosive.cs" Line="6" Column="38" />
+      <File FileName="Assets/Standard Assets/ParticleSystems/Scripts/WaterHoseParticles.cs" Line="47" Column="20" />
+      <File FileName="Assets/Standard Assets/ParticleSystems/Scripts/SmokeParticles.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

@@ -3,6 +3,9 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class Airbase : MonoBehaviour {
 
@@ -16,10 +19,16 @@ public class Airbase : MonoBehaviour {
     private Text scoreUI;
 
     [SerializeField]
+    private Text highScoreUI;
+
+    [SerializeField]
     private Text finalScoreUI;
 
     [SerializeField]
     private Text gameWonScoreUI;
+
+    [SerializeField]
+    private GameObject pausePanelUI;
 
     [SerializeField]
     private GameObject finalPanelUI;
@@ -38,13 +47,18 @@ public class Airbase : MonoBehaviour {
     private bool isPaused;
 
     public static int Score { get; set; }
+    public static int AllTimeOverallScore { get; set; }
+    public static int AllTimeHighScore { get; set; } 
 
     private void Start() {
         Time.timeScale = 1;
         hpUI.maxValue = HP;
         hpUI.value = HP;
 
-        RenderSettings.skybox = skyboxes[Random.Range(0, skyboxes.Count)];
+        AllTimeHighScore = LoadGame().allTimeHighScore;
+        highScoreUI.text = "High Score: " + AllTimeHighScore;
+
+        RenderSettings.skybox = skyboxes[UnityEngine.Random.Range(0, skyboxes.Count)];
 
         StartCoroutine(ScoreCounter());
     }
@@ -66,7 +80,7 @@ public class Airbase : MonoBehaviour {
             gameObject.AddComponent<Rigidbody>();
             foreach (Transform ch in transform) {
                 var rb = ch.gameObject.AddComponent<Rigidbody>();
-                rb.AddTorque(new Vector3(Random.Range(-20, 20), 0, Random.Range(-20, 20)));
+                rb.AddTorque(new Vector3(UnityEngine.Random.Range(-20, 20), 0, UnityEngine.Random.Range(-20, 20)));
             }
 
             finalScoreUI.text = Score.ToString();
@@ -91,6 +105,7 @@ public class Airbase : MonoBehaviour {
     private IEnumerator EndGame() {
         StopCoroutine(ScoreCounter());
         yield return new WaitForSeconds(2);
+        SaveGame();
         Time.timeScale = 0;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -104,6 +119,7 @@ public class Airbase : MonoBehaviour {
         }
     }
 
+
     public IEnumerator CheckPause() {
         if(Input.GetKeyDown(KeyCode.P) && !isPaused) {
             Pause();
@@ -116,16 +132,16 @@ public class Airbase : MonoBehaviour {
     public void Pause() {
         Time.timeScale = 0;
         isPaused = true;
-        Debug.Log("Pausing");
+        pausePanelUI.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
     public void UnPause() {
         Time.timeScale = 1;
         isPaused = false;
-        Debug.Log("Unpausing from paused");
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        pausePanelUI.SetActive(false);
     }
     public void Restart() {
         Time.timeScale = 1;
@@ -135,5 +151,50 @@ public class Airbase : MonoBehaviour {
 
     public void Quit() {
         Application.Quit();
+    }
+
+
+    //----------------------------------------------------------------
+    //Persistence
+    //----------------------------------------------------------------
+    public void SaveGame()
+    {
+        string filename = Application.persistentDataPath + "/playInfo.dat";
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(filename, FileMode.OpenOrCreate);
+
+        int highScore;
+        if (Score > AllTimeHighScore)
+            highScore = Score;
+        else
+            highScore = AllTimeHighScore;
+        PlayerData pd = new PlayerData
+        {
+            allTimeTotalScore = Score + LoadGame().allTimeTotalScore,
+            allTimeHighScore = highScore
+        };
+        bf.Serialize(file, pd);
+        file.Close();
+    }
+
+    public PlayerData LoadGame()
+    {
+        string filename = Application.persistentDataPath + "/playInfo.dat";
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(filename, FileMode.Open);
+
+        PlayerData pd = (PlayerData)bf.Deserialize(file);
+        file.Close();
+        Debug.Log(pd.allTimeTotalScore);
+        Debug.Log(pd.allTimeHighScore);
+        return pd;
+    }
+
+    [Serializable]
+    public class PlayerData
+    {
+        public int allTimeTotalScore;
+        public int allTimeHighScore;
+
     }
 }

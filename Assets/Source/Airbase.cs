@@ -46,6 +46,7 @@ public class Airbase : MonoBehaviour {
     private bool gameWon;
     private bool isPaused;
 
+    public String username;
     public static int Score { get; set; }
     public static int AllTimeOverallScore { get; set; }
     public static int AllTimeHighScore { get; set; } 
@@ -53,9 +54,24 @@ public class Airbase : MonoBehaviour {
     private void Start() {
         Time.timeScale = 1;
         hpUI.maxValue = HP;
-        hpUI.value = HP;
-
-        AllTimeHighScore = LoadGame().allTimeHighScore;
+        String gameMode = PlayerPrefs.GetString("gameMode");
+        PlayerData pd = new PlayerData();
+        username = PlayerPrefs.GetString("username");
+        if (gameMode == "LOAD")
+            pd = LoadGame();
+        else
+        {
+            pd = pd = new PlayerData
+            {
+                username = username,
+                allTimeHighScore = LoadGame().allTimeHighScore,
+                currentScore = 0,
+                baseHealth = 0
+            };
+        }
+        hpUI.value = pd.baseHealth;
+        Score = pd.currentScore;
+        AllTimeHighScore = pd.allTimeHighScore;
         highScoreUI.text = "High Score: " + AllTimeHighScore;
 
         RenderSettings.skybox = skyboxes[UnityEngine.Random.Range(0, skyboxes.Count)];
@@ -148,6 +164,12 @@ public class Airbase : MonoBehaviour {
         SceneManager.LoadScene("Game");
         Score = 0;
     }
+    public void BackToMain()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene("Menu");
+        Score = 0;
+    }
 
     public void Quit() {
         Application.Quit();
@@ -159,7 +181,7 @@ public class Airbase : MonoBehaviour {
     //----------------------------------------------------------------
     public void SaveGame()
     {
-        string filename = Application.persistentDataPath + "/playInfo.dat";
+        string filename = Application.persistentDataPath + "/" + username + ".dat";
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(filename, FileMode.OpenOrCreate);
 
@@ -170,8 +192,11 @@ public class Airbase : MonoBehaviour {
             highScore = AllTimeHighScore;
         PlayerData pd = new PlayerData
         {
-            allTimeTotalScore = Score + LoadGame().allTimeTotalScore,
-            allTimeHighScore = highScore
+            username = username,
+            //allTimeTotalScore = Score + LoadGame().allTimeTotalScore,
+            allTimeHighScore = highScore,
+            currentScore = Score,
+            baseHealth = HP
         };
         bf.Serialize(file, pd);
         file.Close();
@@ -179,22 +204,40 @@ public class Airbase : MonoBehaviour {
 
     public PlayerData LoadGame()
     {
-        string filename = Application.persistentDataPath + "/playInfo.dat";
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Open(filename, FileMode.Open);
+        Debug.Log("Scene 2: Loading game for " + "/" + username + ".dat");
 
-        PlayerData pd = (PlayerData)bf.Deserialize(file);
-        file.Close();
-        Debug.Log(pd.allTimeTotalScore);
-        Debug.Log(pd.allTimeHighScore);
+        PlayerData pd = new PlayerData
+        {
+            username = username,
+            //allTimeTotalScore = 0,
+            allTimeHighScore = 0,
+            currentScore = 0
+        };
+        string filename = Application.persistentDataPath + "/" + username + ".dat";
+        try
+        {
+            Debug.Log("Trying to load for user: " + username);
+            FileStream file = File.Open(filename, FileMode.Open);
+            BinaryFormatter bf = new BinaryFormatter();
+            pd = (PlayerData)bf.Deserialize(file);
+            file.Close();
+            //Debug.Log(pd.allTimeTotalScore);
+            Debug.Log(pd.allTimeHighScore);
+        }
+        catch (FileNotFoundException)
+        {
+            Debug.Log("New player created");
+        }
         return pd;
     }
 
     [Serializable]
     public class PlayerData
     {
-        public int allTimeTotalScore;
+        public string username;
+        //public int allTimeTotalScore;
         public int allTimeHighScore;
-
+        public int currentScore;
+        public int baseHealth;
     }
 }

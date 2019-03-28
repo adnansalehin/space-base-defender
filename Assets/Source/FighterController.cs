@@ -15,6 +15,8 @@ public class FighterController : MonoBehaviour {
     private Transform tr;
     private Rigidbody rb;
 
+    private AudioSource audioSource;
+
     private float ntruePitch;
     private float ntrueYaw;
     private float trueYaw;
@@ -23,22 +25,40 @@ public class FighterController : MonoBehaviour {
     void Start () {
         tr = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
 
         Cursor.lockState = CursorLockMode.Locked;
     }
 
 	void Update () {
-        truePitch = -Input.GetAxis("Mouse Y");
-        trueYaw = Input.GetAxis("Mouse X");
+        if (Time.timeScale > 0)
+        {
+            truePitch = -Input.GetAxis("Mouse Y");
+            trueYaw = Input.GetAxis("Mouse X");
 
-        ntrueYaw = Mathf.Lerp(ntrueYaw, trueYaw, Time.deltaTime * 4);
-        ntruePitch = Mathf.Lerp(ntruePitch, truePitch, Time.deltaTime * 4);
+            ntrueYaw = Mathf.Lerp(ntrueYaw, trueYaw, Time.deltaTime * 4);
+            ntruePitch = Mathf.Lerp(ntruePitch, truePitch, Time.deltaTime * 4);
 
-        if (Input.GetMouseButton(0)) {
-            foreach(var b in blasters) {
-                b.Shoot();
+            if (Input.GetMouseButton(0))
+            {
+                foreach (var b in blasters)
+                {
+                    b.Shoot();
+                }
             }
-        } 
+            if (Input.GetMouseButtonDown(0))
+            {
+                audioSource.Play();
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                audioSource.Stop();
+            }
+        }
+        if (Time.timeScale <= 0)
+        {
+            audioSource.Stop();
+        }
     }
 
     void FixedUpdate() {

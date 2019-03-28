@@ -68,6 +68,7 @@
     <Compile Include="Assets\Source\EnemySpawner.cs" />
     <Compile Include="Assets\Source\FighterController.cs" />
     <Compile Include="Assets\Source\Fractal.cs" />
+    <Compile Include="Assets\Source\GameOver.cs" />
     <Compile Include="Assets\Source\ShipCamera.cs" />
     <Compile Include="Assets\Source\SpaceShipMove.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">

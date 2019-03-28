@@ -11,6 +11,8 @@ public class SpaceShipMove : MonoBehaviour {
 	}
 	
 	void Update () {
-		tr.Translate(Vector3.forward * this.speed);
+        if(Time.timeScale > 0) {
+            tr.Translate(Vector3.forward * this.speed);
+        }
 	}
 }

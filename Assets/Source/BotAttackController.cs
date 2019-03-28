@@ -69,6 +69,7 @@ public class BotAttackController : MonoBehaviour {
 
     private IEnumerator Destroy() {
         rb.useGravity = true;
+        Airbase.Score += 50;
         var e = Instantiate(destroyEffect, tr.position, Quaternion.identity) as GameObject;
         smokeTrail.SetActive(true);
         Destroy(e, 5);
@@ -76,11 +77,10 @@ public class BotAttackController : MonoBehaviour {
         EnemySpawner.Instance.attackers.Remove(tr);
         GetComponent<BoxCollider>().enabled = false;
 
-        yield return new WaitForSeconds(15);
+        yield return new WaitForSeconds(5);
         smokeTrail.transform.SetParent(null);
         Destroy(smokeTrail, 30);
         Destroy(gameObject);
-        Airbase.Score += 50;
     }
 
     private void ResetTarget() {

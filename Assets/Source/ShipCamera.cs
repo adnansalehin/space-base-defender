@@ -25,6 +25,8 @@ public class ShipCamera : MonoBehaviour {
 
         Vector3 newPos = place.position - (rotation * Vector3.forward * distance);
         tr.rotation = rotation;
-        tr.position = Vector3.Lerp(tr.position, newPos, Time.deltaTime * 30);
+        if(Time.timeScale > 0) {
+            tr.position = Vector3.Lerp(tr.position, newPos, Time.deltaTime * 30);
+        }
     }
 }

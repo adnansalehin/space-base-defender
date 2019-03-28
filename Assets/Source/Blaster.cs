@@ -22,20 +22,25 @@ public class Blaster : MonoBehaviour {
     public void Shoot() {
         if (isOnCoolDown) return;
 
-        var effect = Instantiate(shootEffect, transform.position, Quaternion.identity) as GameObject;
-        effect.transform.parent = transform;
-        Destroy(effect, .1f);
+        if (Time.timeScale > 0)
+        {
 
-        var bullet = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
-        bullet.GetComponent<Rigidbody>().AddForce(transform.forward * 80, ForceMode.Impulse);
+            var effect = Instantiate(shootEffect, transform.position, Quaternion.identity) as GameObject;
+            effect.transform.parent = transform;
+            Destroy(effect, .1f);
 
-        RaycastHit hit;
-        if(Physics.Raycast(camera.position, camera.forward, out hit)) {
-            bullet.transform.LookAt(hit.point);
+            var bullet = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
+            bullet.GetComponent<Rigidbody>().AddForce(transform.forward * 80, ForceMode.Impulse);
+
+            RaycastHit hit;
+            if (Physics.Raycast(camera.position, camera.forward, out hit))
+            {
+                bullet.transform.LookAt(hit.point);
+            }
+
+            isOnCoolDown = true;
+            StartCoroutine(Cooldown());
         }
-
-        isOnCoolDown = true;
-        StartCoroutine(Cooldown());
     }
 	
 	private IEnumerator Cooldown() {

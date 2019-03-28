@@ -19,7 +19,13 @@ public class Airbase : MonoBehaviour {
     private Text finalScoreUI;
 
     [SerializeField]
+    private Text gameWonScoreUI;
+
+    [SerializeField]
     private GameObject finalPanelUI;
+
+    [SerializeField]
+    private GameObject gameWonPanelUI;
 
     [SerializeField]
     private GameObject spawner;
@@ -27,20 +33,20 @@ public class Airbase : MonoBehaviour {
     [SerializeField]
     private List<Material> skyboxes;
 
-    private bool gameover;
-    private bool isPaused = false;
-    private int score;
+    private bool gameOver;
+    private bool gameWon;
+    private bool isPaused;
 
     public static int Score { get; set; }
 
     private void Start() {
+        Time.timeScale = 1;
         hpUI.maxValue = HP;
         hpUI.value = HP;
 
         RenderSettings.skybox = skyboxes[Random.Range(0, skyboxes.Count)];
 
         StartCoroutine(ScoreCounter());
-        //StartCoroutine(CheckPause());
     }
 
     public void Update()
@@ -63,26 +69,19 @@ public class Airbase : MonoBehaviour {
                 rb.AddTorque(new Vector3(Random.Range(-20, 20), 0, Random.Range(-20, 20)));
             }
 
-            finalScoreUI.text = score.ToString();
-            gameover = true;
+            finalScoreUI.text = Score.ToString();
+            gameOver = true;
             StartCoroutine(EndGame());
         }
     }
 
-    //private IEnumerator ScoreCounter() {
-    //    while (!gameover) {
-    //        scoreUI.text = "Score: " + Score;
-    //        yield return new WaitForSeconds(1);
-    //    }
-    //}
-
     private IEnumerator ScoreCounter() {
-        while (!gameover) {
+        while (!gameOver && !gameWon) {
             scoreUI.text = "Score: " + Score;
-            Debug.Log(Score);
-            if (Score >= 50) {
-                finalScoreUI.text = Score.ToString();
+            if (Score >= 1000) {
+                gameWonScoreUI.text = Score.ToString();
                 Debug.Log("Hit Winning score");
+                gameWon = true;
                 StartCoroutine(EndGame());
             }
             yield return new WaitForSeconds(1);
@@ -90,11 +89,19 @@ public class Airbase : MonoBehaviour {
     }
 
     private IEnumerator EndGame() {
+        StopCoroutine(ScoreCounter());
         yield return new WaitForSeconds(2);
         Time.timeScale = 0;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        finalPanelUI.SetActive(true);
+        if (gameWon)
+        {
+            gameWonPanelUI.SetActive(true);
+        }
+        else if(gameOver)
+        {
+            finalPanelUI.SetActive(true);
+        }
     }
 
     public IEnumerator CheckPause() {

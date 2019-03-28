@@ -14,7 +14,7 @@ public class Bullet : MonoBehaviour {
         if (!isEnemy && col.tag == "Enemy") {
             col.GetComponent<BotAttackController>().ApplyDamage(100);
         } else if (isEnemy && col.tag == "MainBase") {
-            col.GetComponent<Airbase>().ApplyDamage(1);
+            col.GetComponent<Airbase>().ApplyDamage(2);
         }
         Destroy(gameObject);
     }

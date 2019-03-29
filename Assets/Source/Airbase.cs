@@ -66,7 +66,7 @@ public class Airbase : MonoBehaviour {
                 username = username,
                 allTimeHighScore = LoadGame().allTimeHighScore,
                 currentScore = 0,
-                baseHealth = 0
+                baseHealth = HP
             };
         }
         hpUI.value = pd.baseHealth;
@@ -161,11 +161,13 @@ public class Airbase : MonoBehaviour {
     }
     public void Restart() {
         Time.timeScale = 1;
+        PlayerPrefs.SetString("gameMode", "START");
         SceneManager.LoadScene("Game");
         Score = 0;
     }
     public void BackToMain()
     {
+        SaveGame();
         Time.timeScale = 1;
         SceneManager.LoadScene("Menu");
         Score = 0;
@@ -196,7 +198,7 @@ public class Airbase : MonoBehaviour {
             //allTimeTotalScore = Score + LoadGame().allTimeTotalScore,
             allTimeHighScore = highScore,
             currentScore = Score,
-            baseHealth = HP
+            baseHealth = hpUI.value
         };
         bf.Serialize(file, pd);
         file.Close();
@@ -238,6 +240,6 @@ public class Airbase : MonoBehaviour {
         //public int allTimeTotalScore;
         public int allTimeHighScore;
         public int currentScore;
-        public int baseHealth;
+        public float baseHealth;
     }
 }

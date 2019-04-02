@@ -19,6 +19,9 @@ public class MainMenu : MonoBehaviour
 
     private string usernameText;
 
+    [SerializeField]
+    private AudioSource buttonAudioSource;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +29,6 @@ public class MainMenu : MonoBehaviour
         se.AddListener(SubmitName);
         username.onEndEdit = se;
 
-        //StartCoroutine(CheckForUsername());
     }
 
     // Update is called once per frame
@@ -47,18 +49,7 @@ public class MainMenu : MonoBehaviour
 
     public void StartGame()
     {
-        //overwrite existing file. 
-        //Airbase.PlayerData pd = new Airbase.PlayerData
-        //{
-        //    username = usernameText,
-        //    allTimeTotalScore = 0,
-        //    allTimeHighScore = 0
-        //};
-        //string filename = Application.persistentDataPath + "/" + usernameText + ".dat";
-        //FileStream file = File.Open(filename, FileMode.Create);
-        //BinaryFormatter bf = new BinaryFormatter();
-        //bf.Serialize(file, pd);
-        //file.Close();
+        buttonAudioSource.PlayOneShot(buttonAudioSource.clip);
         PlayerPrefs.SetString("username", usernameText);
         PlayerPrefs.SetString("gameMode", "START");
         SceneManager.LoadScene("Game");
@@ -66,6 +57,7 @@ public class MainMenu : MonoBehaviour
 
     public void LoadGame()
     {
+        buttonAudioSource.PlayOneShot(buttonAudioSource.clip);
         PlayerPrefs.SetString("username", usernameText);
         PlayerPrefs.SetString("gameMode", "LOAD");
         SceneManager.LoadScene("Game");

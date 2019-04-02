@@ -42,6 +42,9 @@ public class Airbase : MonoBehaviour {
     [SerializeField]
     private List<Material> skyboxes;
 
+    [SerializeField]
+    private AudioSource buttonAudioSource;
+
     private bool gameOver;
     private bool gameWon;
     private bool isPaused;
@@ -53,6 +56,8 @@ public class Airbase : MonoBehaviour {
 
     private void Start() {
         Time.timeScale = 1;
+        Cursor.visible = false;
+
         hpUI.maxValue = HP;
         String gameMode = PlayerPrefs.GetString("gameMode");
         PlayerData pd = new PlayerData();
@@ -146,6 +151,7 @@ public class Airbase : MonoBehaviour {
         yield return new WaitForSeconds(0.1f);
     }
     public void Pause() {
+        buttonAudioSource.PlayOneShot(buttonAudioSource.clip);
         Time.timeScale = 0;
         isPaused = true;
         pausePanelUI.SetActive(true);
@@ -153,6 +159,7 @@ public class Airbase : MonoBehaviour {
         Cursor.visible = true;
     }
     public void UnPause() {
+        buttonAudioSource.PlayOneShot(buttonAudioSource.clip);
         Time.timeScale = 1;
         isPaused = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -160,6 +167,7 @@ public class Airbase : MonoBehaviour {
         pausePanelUI.SetActive(false);
     }
     public void Restart() {
+        buttonAudioSource.PlayOneShot(buttonAudioSource.clip);
         Time.timeScale = 1;
         PlayerPrefs.SetString("gameMode", "START");
         SceneManager.LoadScene("Game");
@@ -167,6 +175,7 @@ public class Airbase : MonoBehaviour {
     }
     public void BackToMain()
     {
+        buttonAudioSource.PlayOneShot(buttonAudioSource.clip);
         SaveGame();
         Time.timeScale = 1;
         SceneManager.LoadScene("Menu");
@@ -174,6 +183,7 @@ public class Airbase : MonoBehaviour {
     }
 
     public void Quit() {
+        buttonAudioSource.PlayOneShot(buttonAudioSource.clip);
         Application.Quit();
     }
 
@@ -183,6 +193,7 @@ public class Airbase : MonoBehaviour {
     //----------------------------------------------------------------
     public void SaveGame()
     {
+
         string filename = Application.persistentDataPath + "/" + username + ".dat";
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(filename, FileMode.OpenOrCreate);
